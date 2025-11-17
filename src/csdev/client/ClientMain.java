@@ -7,27 +7,28 @@ import csdev.*;
 
 public class ClientMain {
 
-    public static void main(String[] args) {
-        if (args.length < 1 || args.length > 2) {
-            System.err.println("Usage: java csdev.client.ClientMain <Name> [host]");
-            waitKey();
-            return;
-        }
+	public static void main(String[] args) {
 
-        try (Socket socket = (args.length == 1
-                ? new Socket(/*InetAddress.getLocalHost()*/InetAddress.getByName("DESKTOP-PUTBKDN"), Protocol.PORT)
-                : new Socket(args[1], Protocol.PORT))) {
+	    if (args.length < 1) {
+	        System.err.println("Usage: java ClientMain <YourName>");
+	        waitKey();
+	        return;
+	    }
 
-            System.err.println("Connected to server.");
-            System.out.println("ser name "+socket.getInetAddress().getHostName());
-            session(socket, args[0]);
+	    String SERVER_HOST = "DESKTOP-PUTBKDN";
 
-        } catch (Exception e) {
-            System.err.println("Client error: " + e);
-        } finally {
-            System.err.println("Exit...");
-        }
-    }
+	    try (Socket socket = new Socket(SERVER_HOST, Protocol.PORT)) {
+
+	        System.out.println("Connected to server: " + SERVER_HOST);
+	        System.out.println("Resolved IP: " + socket.getInetAddress());
+
+	        session(socket, args[0]);
+
+	    } catch (Exception e) {
+	        System.err.println("Client error: " + e);
+	    }
+	}
+
 
     static void waitKey() {
         System.err.println("Press Enter to exit...");
