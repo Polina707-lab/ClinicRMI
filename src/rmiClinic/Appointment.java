@@ -1,4 +1,4 @@
-package csdev.server;
+package rmiClinic;
 
 import java.io.Serializable;
 
