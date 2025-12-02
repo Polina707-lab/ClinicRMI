@@ -1,18 +1,16 @@
 package rmiClinic;
 
-import java.rmi.*;
+import java.rmi.Naming;
 import java.util.*;
 import rmiClinic.Clinic.RemoteClinic;
-import rmiClinic.Clinic.ClinicException;
 
 public class ClinicClient {
 
     public static void main(String[] args) {
 
         try {
-            		RemoteClinic clinic =
-            	    (RemoteClinic) Naming.lookup("rmi://DESKTOP-PUTBKDN/Clinic");
-
+            RemoteClinic clinic =
+                    (RemoteClinic) Naming.lookup("rmi://DESKTOP-PUTBKDN/Clinic");
 
             Scanner in = new Scanner(System.in);
 
@@ -25,6 +23,7 @@ public class ClinicClient {
 
                 switch (cmd) {
 
+                  
                     case "1":
                         System.out.println("\nRequesting available slots...");
                         try {
@@ -37,21 +36,23 @@ public class ClinicClient {
                                 for (String s : slots)
                                     System.out.println("  - " + s);
                             }
-                        }
-                        catch (ClinicException e) {
-                            System.err.println("Error: " + e.getMessage());
+
+                        } catch (Exception e) {
+                            System.out.println("\nServer offline. Client will exit.");
+                            return;
                         }
                         break;
 
-                    case "2": 
+                   
+                    case "2":
                         System.out.println("\nRequesting available slots...");
                         String[] slots;
 
                         try {
                             slots = clinic.getFreeSlots();
-                        } catch (ClinicException e) {
-                            System.err.println("Error: " + e.getMessage());
-                            break;
+                        } catch (Exception e) {
+                            System.out.println("\nServer offline. Client will exit.");
+                            return;
                         }
 
                         if (slots.length == 0) {
@@ -87,9 +88,10 @@ public class ClinicClient {
                         try {
                             clinic.bookAppointment(time, name, phone, complaint);
                             System.out.println("--- Appointment successfully created! ---");
-                        }
-                        catch (ClinicException e) {
-                            System.err.println("Error: " + e.getMessage());
+
+                        } catch (Exception e) {
+                            System.out.println("\nServer offline. Client will exit.");
+                            return;
                         }
 
                         break;
@@ -98,15 +100,14 @@ public class ClinicClient {
                         System.out.println("Disconnecting...");
                         return;
 
-                   
-
                     default:
                         System.out.println("Invalid input.");
                 }
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("\nUnable to connect to server.");
+            System.out.println("Reason: " + e.getMessage());
         }
     }
 
@@ -115,7 +116,6 @@ public class ClinicClient {
         System.out.println("1. Show available slots");
         System.out.println("2. Make an appointment");
         System.out.println("3. Exit");
-      
         System.out.print("Your choice: ");
     }
 }

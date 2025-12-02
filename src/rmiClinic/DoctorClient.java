@@ -7,22 +7,28 @@ public class DoctorClient {
 
     public static void main(String[] args) {
         try {
-        	Clinic.RemoteClinic clinic =
-        		    (Clinic.RemoteClinic) Naming.lookup("rmi://DESKTOP-PUTBKDN/Clinic");
+            Clinic.RemoteClinic clinic =
+                (Clinic.RemoteClinic) Naming.lookup("rmi://DESKTOP-PUTBKDN/Clinic");
 
             Scanner in = new Scanner(System.in);
 
             System.out.print("Enter doctor password: ");
             String pass = in.nextLine().trim();
 
-            if (!clinic.doctorLogin(pass)) {
-                System.out.println("Access denied. Wrong password.");
+            try {
+                if (!clinic.doctorLogin(pass)) {
+                    System.out.println("Access denied. Wrong password.");
+                    return;
+                }
+            } catch (Exception e) {
+                System.out.println("\nServer offline. Client will exit.");
                 return;
             }
 
             System.out.println("Welcome, Doctor!");
             System.out.println("======================");
 
+          
             while (true) {
                 System.out.println("\nDoctor menu:");
                 System.out.println("1. View all appointments");
@@ -33,17 +39,27 @@ public class DoctorClient {
                 String cmd = in.nextLine().trim();
 
                 switch (cmd) {
+
+                
                     case "1":
-                        String[] all = clinic.getAllAppointments();
-                        if (all.length == 0)
-                            System.out.println("No appointments.");
-                        else {
-                            System.out.println("Appointments:");
-                            for (String s : all)
-                                System.out.println(" - " + s);
+                        try {
+                            String[] all = clinic.getAllAppointments();
+
+                            if (all.length == 0)
+                                System.out.println("No appointments.");
+                            else {
+                                System.out.println("Appointments:");
+                                for (String s : all)
+                                    System.out.println(" - " + s);
+                            }
+
+                        } catch (Exception e) {
+                            System.out.println("\nServer offline. Client will exit.");
+                            return;
                         }
                         break;
 
+                    
                     case "2":
                         System.out.print("Enter appointment time to cancel: ");
                         String time = in.nextLine().trim();
@@ -51,8 +67,9 @@ public class DoctorClient {
                         try {
                             clinic.cancelAppointment(time);
                             System.out.println("Appointment cancelled.");
-                        } catch (Clinic.ClinicException e) {
-                            System.err.println("Error: " + e.getMessage());
+                        } catch (Exception e) {
+                            System.out.println("\nServer offline or error. Client will exit.");
+                            return;
                         }
                         break;
 
@@ -66,7 +83,8 @@ public class DoctorClient {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("\nUnable to connect to server.");
+            System.out.println("Reason: " + e.getMessage());
         }
     }
 }

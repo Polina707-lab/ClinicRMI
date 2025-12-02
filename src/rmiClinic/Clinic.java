@@ -23,8 +23,7 @@ public class Clinic {
         boolean doctorLogin(String password) 
     			throws RemoteException;
     }
-    
-    
+      
     
     
     public static class ClinicException extends Exception {
