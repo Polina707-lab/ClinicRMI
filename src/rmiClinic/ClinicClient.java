@@ -10,8 +10,9 @@ public class ClinicClient {
     public static void main(String[] args) {
 
         try {
-            RemoteClinic clinic =
-                    (RemoteClinic) Naming.lookup("rmi://localhost/Clinic");
+            		RemoteClinic clinic =
+            	    (RemoteClinic) Naming.lookup("rmi://DESKTOP-PUTBKDN/Clinic");
+
 
             Scanner in = new Scanner(System.in);
 

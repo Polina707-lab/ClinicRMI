@@ -7,8 +7,8 @@ public class DoctorClient {
 
     public static void main(String[] args) {
         try {
-            Clinic.RemoteClinic clinic =
-                    (Clinic.RemoteClinic) Naming.lookup("rmi://localhost/Clinic");
+        	Clinic.RemoteClinic clinic =
+        		    (Clinic.RemoteClinic) Naming.lookup("rmi://DESKTOP-PUTBKDN/Clinic");
 
             Scanner in = new Scanner(System.in);
 
